@@ -1,7 +1,7 @@
 (require 'company)
 (require 'haskell-process)
 
-(defun company-ghci-backend (command &optional arg &rest ignored)
+(defun company-ghci (command &optional arg &rest ignored)
 	(interactive (list 'interactive))
 	(let* ((to-complete (company-grab-symbol))
 				 (can-complete (haskell-session-maybe))
