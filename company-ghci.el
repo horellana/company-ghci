@@ -29,10 +29,14 @@
 (require 'company)
 (require 'haskell-process)
 
+(defun company-ghci/chomp (str)
+	(replace-regexp-in-string "\n$" "" str))
+
 (defun company-ghci/get-signature (fn)
 	(when (haskell-session-maybe)
-		(haskell-process-queue-sync-request (haskell-process)
-																				(concat ":t " fn))))
+		(company-ghci/chomp
+		 (haskell-process-queue-sync-request (haskell-process)
+																				 (concat ":t " fn)))))
 
 (defun company-ghci (command &optional arg &rest ignored)
   "Company backend that provides completions using the current ghci process."
