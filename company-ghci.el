@@ -34,9 +34,11 @@
 
 (defun company-ghci/get-signature (fn)
 	(when (haskell-session-maybe)
-		(company-ghci/chomp
-		 (haskell-process-queue-sync-request (haskell-process)
-																				 (concat ":t " fn)))))
+		(let ((response (company-ghci/chomp
+										 (haskell-process-queue-sync-request (haskell-process)
+																												 (concat ":t " fn)))))
+			(unless (string-match "interactive" response)
+				response))))
 
 (defun company-ghci (command &optional arg &rest ignored)
   "Company backend that provides completions using the current ghci process."
