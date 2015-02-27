@@ -18,7 +18,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-
 ;;; Usage:
 
 ;; (require 'company-ghci)
@@ -29,6 +28,11 @@
 
 (require 'company)
 (require 'haskell-process)
+
+(defun company-ghci/get-signature (fn)
+	(when (haskell-session-maybe)
+		(haskell-process-queue-sync-request (haskell-process)
+																				(concat ":t " fn))))
 
 (defun company-ghci (command &optional arg &rest ignored)
   "Company backend that provides completions using the current ghci process."
