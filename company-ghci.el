@@ -2,7 +2,7 @@
 
 ;; Author: Hector Orellana <hofm92@gmail.com>
 ;; Package-Requires: ((company "0.8.11") (haskell-mode "13"))
-;; Package-Version: 0.01
+;; Package-Version: 0.02
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
