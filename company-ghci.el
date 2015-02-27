@@ -18,6 +18,7 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+
 ;;; Usage:
 
 ;; (require 'company-ghci)
@@ -30,9 +31,11 @@
 (require 'haskell-process)
 
 (defun company-ghci/chomp (str)
+	"Remove trailing newline in STR."
 	(replace-regexp-in-string "\n$" "" str))
 
 (defun company-ghci/get-signature (fn)
+	"Try to get the signature of FN from the ghci process."
 	(when (haskell-session-maybe)
 		(let ((response (company-ghci/chomp
 										 (haskell-process-queue-sync-request (haskell-process)
