@@ -28,6 +28,7 @@
 ;;; Code:
 
 (require 'company)
+(require 'haskell)
 (require 'haskell-process)
 
 (defun company-ghci/chomp (str)
