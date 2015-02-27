@@ -36,9 +36,9 @@
   (pcase command
     (interactive (company-begin-backend 'company-ghci))
     (prefix  (and (haskell-session-maybe)
-		  (company-grab-symbol)))
+									(company-grab-symbol)))
     (candidates (cdr (haskell-process-get-repl-completions (haskell-process)
-							   arg)))))
+																													 arg)))))
 
 (provide 'company-ghci)
 ;;; company-ghci.el ends here
