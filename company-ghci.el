@@ -44,6 +44,7 @@
 			(unless (string-match "interactive" response)
 				response))))
 
+;;;###autoload
 (defun company-ghci (command &optional arg &rest ignored)
   "Company backend that provides completions using the current ghci process."
   (interactive (list 'interactive))
