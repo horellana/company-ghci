@@ -46,7 +46,7 @@
 (defun company-ghci (command &optional arg &rest ignored)
   "Company backend that provides completions using the current ghci process."
   (interactive (list 'interactive))
-  (case command
+  (cl-case command
     (interactive (company-begin-backend 'company-ghci))
     (prefix  (and (haskell-session-maybe)
 									(company-grab-symbol)))
