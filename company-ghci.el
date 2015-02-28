@@ -44,16 +44,18 @@
 			(unless (string-match "interactive" response)
 				response))))
 
+(defun company-ghci/get-completions (str)
+	(when (haskell-session-maybe)
+		(cdr (haskell-process-get-repl-completions (haskell-process) str))))
+
 ;;;###autoload
 (defun company-ghci (command &optional arg &rest ignored)
   "Company backend that provides completions using the current ghci process."
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-ghci))
-    (prefix  (and (haskell-session-maybe)
-									(company-grab-symbol)))
-    (candidates (cdr (haskell-process-get-repl-completions (haskell-process)
-																													 arg)))
+    (prefix  (and (haskell-session-maybe)	(company-grab-symbol)))
+		(candidates (company-ghci/get-completions arg))
 		(meta (company-ghci/get-signature arg))))
 
 (provide 'company-ghci)
