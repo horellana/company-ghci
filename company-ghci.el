@@ -2,7 +2,7 @@
 
 ;; Author: Hector Orellana <hofm92@gmail.com>
 ;; Package-Requires: ((company "0.8.11") (haskell-mode "13"))
-;; Package-Version: 0.02
+;; Package-Version: 0.03
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -27,20 +27,29 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'company)
 (require 'haskell)
 (require 'haskell-process)
+(require 'haskell-interactive-mode)
 
 (defun company-ghci/chomp (str)
 	"Remove trailing newline in STR."
 	(replace-regexp-in-string "\n$" "" str))
+
+(defun company-ghci/grab-line ()
+	(company-ghci/chomp
+	 (replace-regexp-in-string (haskell-interactive-prompt-regex)
+														 ""
+														 (thing-at-point 'line t))))
 
 (defun company-ghci/repl-command (cmd)
 	(when (haskell-session-maybe)
 		(let ((response (company-ghci/chomp (haskell-process-queue-sync-request
 																				 (haskell-process)
 																				 cmd))))
-			(unless (string-match "interactive" response)
+			(unless (and (stringp response)
+									 (string-match "interactive" response))
 				response))))
 
 (defun company-ghci/get-signature (function)
@@ -49,8 +58,13 @@
 
 (defun company-ghci/get-completions (str)
 	(when (haskell-session-maybe)
-		(cdr (haskell-process-get-repl-completions (haskell-process)
-																							 str))))
+		(let ((res (cl-remove-if (lambda (a) (or (equal a "import")
+																						 (<= (length a) 0)))
+														 (haskell-process-get-repl-completions
+															(haskell-process) str))))
+			(if (string-match "import" str)
+					(mapcar (lambda (a) (concat "import " a)) res)
+				res))))
 
 ;;;###autoload
 (defun company-ghci (command &optional arg &rest ignored)
@@ -58,7 +72,7 @@
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-ghci))
-    (prefix  (and (haskell-session-maybe) (company-grab-symbol)))
+    (prefix  (and (haskell-session-maybe) (company-ghci/grab-line)))
 		(candidates (company-ghci/get-completions arg))
 		(meta (company-ghci/get-signature arg))))
 
