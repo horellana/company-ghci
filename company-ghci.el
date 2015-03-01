@@ -56,12 +56,21 @@
 	"Uses the :t repl command to get the signature of FUNCTION."
 	(company-ghci/repl-command (concat ":t " function)))
 
+(defun company-ghci/is-valid-completion (completion to-complete)
+	(and (string-match to-complete completion)
+			 (>= (length completion)
+					 (length to-complete))))
+
 (defun company-ghci/get-completions (str)
 	(when (haskell-session-maybe)
-		(let ((res (cl-remove-if (lambda (a) (or (equal a "import")
-																						 (<= (length a) 0)))
-														 (haskell-process-get-repl-completions
-															(haskell-process) str))))
+		(let* ((in-import-stm (string-match "import" str))
+					 (to-complete (if in-import-stm
+														(second (split-string str " ")) str))
+					 (res (cl-remove-if
+								 (lambda (a) (not (company-ghci/is-valid-completion a
+																																		to-complete)))
+								 (haskell-process-get-repl-completions (haskell-process)
+																											 str))))
 			(if (string-match "import" str)
 					(mapcar (lambda (a) (concat "import " a)) res)
 				res))))
