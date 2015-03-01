@@ -35,18 +35,22 @@
 	"Remove trailing newline in STR."
 	(replace-regexp-in-string "\n$" "" str))
 
-(defun company-ghci/get-signature (fn)
-	"Try to get the signature of FN from the ghci process."
+(defun company-ghci/repl-command (cmd)
 	(when (haskell-session-maybe)
-		(let ((response (company-ghci/chomp
-										 (haskell-process-queue-sync-request (haskell-process)
-																												 (concat ":t " fn)))))
+		(let ((response (company-ghci/chomp (haskell-process-queue-sync-request
+																				 (haskell-process)
+																				 cmd))))
 			(unless (string-match "interactive" response)
 				response))))
 
+(defun company-ghci/get-signature (function)
+	"Uses the :t repl command to get the signature of FUNCTION."
+	(company-ghci/repl-command (concat ":t " function)))
+
 (defun company-ghci/get-completions (str)
 	(when (haskell-session-maybe)
-		(cdr (haskell-process-get-repl-completions (haskell-process) str))))
+		(cdr (haskell-process-get-repl-completions (haskell-process)
+																							 str))))
 
 ;;;###autoload
 (defun company-ghci (command &optional arg &rest ignored)
@@ -54,7 +58,7 @@
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-ghci))
-    (prefix  (and (haskell-session-maybe)	(company-grab-symbol)))
+    (prefix  (and (haskell-session-maybe) (company-grab-symbol)))
 		(candidates (company-ghci/get-completions arg))
 		(meta (company-ghci/get-signature arg))))
 
