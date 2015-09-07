@@ -30,11 +30,8 @@
 (require 'cl-lib)
 (require 'company)
 (require 'haskell)
+(require 'haskell-completions)
 (require 'haskell-process)
-
-(defun company-ghci/chomp (str)
-  "Remove trailing newline in STR."
-  (replace-regexp-in-string "\n$" "" str))
 
 (defun company-ghci/repl-command (cmd)
   (when (haskell-session-maybe)
@@ -49,14 +46,11 @@
   "Uses the :t repl command to get the signature of FUNCTION."
   (company-ghci/repl-command (concat ":t " function)))
 
-(defun company-ghci/is-valid-completion (completion to-complete)
-  (string-match to-complete completion))
-
 (defun company-ghci/get-completions (to-complete)
-  (when (haskell-session-maybe)
-    (cl-remove-if-not (lambda (a) (company-ghci/is-valid-completion a to-complete))
-		      (haskell-process-get-repl-completions (haskell-process)
-							    to-complete))))
+  (cl-multiple-value-bind (beg end completions)
+      (haskell-completions-sync-completions-at-point)
+    (cl-remove-if-not (lambda (a) (string-match to-complete a))
+		      completions)))
 
 ;;;###autoload
 (defun company-ghci (command &optional arg &rest ignored)
@@ -64,7 +58,10 @@
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-ghci))
-    (prefix  (and (haskell-session-maybe) (company-grab-symbol)))
+    (prefix  (and (haskell-session-maybe)
+		  (cl-multiple-value-bind
+		      (beg end prefix type) (haskell-completions-grab-prefix)
+		    prefix)))
     (candidates (company-ghci/get-completions arg))
     (meta (company-ghci/get-signature arg))))
 
