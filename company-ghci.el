@@ -1,4 +1,4 @@
-;;; company-ghci.el --- company backend which uses the current ghci process.
+;;; company-ghci.el --- company backend which uses the current ghci process.-*- lexical-binding: t -*-
 
 ;; Author: Hector Orellana <hofm92@gmail.com>
 ;; Package-Requires: ((company "0.8.11") (haskell-mode "13"))
