@@ -36,11 +36,12 @@
 
 (defun company-ghci/repl-command (cmd)
   "Execute CMD in the ghci process."
-  (let* ((response (haskell-process-queue-sync-request (haskell-process)
-						       cmd)))
-    (if (eq (haskell-utils-parse-repl-response response)
-	    'success)
-	(replace-regexp-in-string "\n$" "" response))))
+  (let ((response (haskell-utils-reduce-string
+		   (haskell-process-queue-sync-request (haskell-process)
+						       cmd))))
+    (when (equal (haskell-utils-parse-repl-response response)
+		 'success)
+      (replace-regexp-in-string "\n$" "" response))))
 
 (defun company-ghci/get-signature (function)
   "Uses the :t repl command to get the signature of FUNCTION."
