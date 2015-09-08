@@ -30,16 +30,17 @@
 (require 'cl-lib)
 (require 'company)
 (require 'haskell)
+(require 'haskell-utils)
 (require 'haskell-process)
 (require 'haskell-completions)
 
 (defun company-ghci/repl-command (cmd)
+  "Execute CMD in the ghci process."
   (let* ((response (haskell-process-queue-sync-request (haskell-process)
-						       cmd))
-	 (response-string (replace-regexp-in-string "\n$" "" response)))
-    (unless (and (stringp response-string)
-		 (string-match "interactive" response-string))
-      response-string)))
+						       cmd)))
+    (if (eq (haskell-utils-parse-repl-response response)
+	    'success)
+	(replace-regexp-in-string "\n$" "" response))))
 
 (defun company-ghci/get-signature (function)
   "Uses the :t repl command to get the signature of FUNCTION."
