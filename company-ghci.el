@@ -47,9 +47,9 @@
   (company-ghci/repl-command (concat ":t " function)))
 
 (defun company-ghci/get-completions (to-complete)
-  (cl-multiple-value-bind (beg end completions)
-      (haskell-completions-sync-completions-at-point)
-    (cl-remove-if-not (lambda (a) (string-match to-complete a))
+  (cl-destructuring-bind
+      (beg end completions) (haskell-completions-sync-completions-at-point)
+    (cl-remove-if-not (lambda (candidate) (string-match to-complete candidate))
 		      completions)))
 
 ;;;###autoload
@@ -59,7 +59,7 @@
   (cl-case command
     (interactive (company-begin-backend 'company-ghci))
     (prefix  (and (haskell-session-maybe)
-		  (cl-multiple-value-bind
+		  (cl-destructuring-bind
 		      (beg end prefix type) (haskell-completions-grab-prefix)
 		    prefix)))
     (candidates (company-ghci/get-completions arg))
