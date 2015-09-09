@@ -39,9 +39,8 @@
   (let ((response (haskell-utils-reduce-string
 		   (haskell-process-queue-sync-request (haskell-process)
 						       cmd))))
-    (when (equal (haskell-utils-parse-repl-response response)
-		 'success)
-      (replace-regexp-in-string "\n$" "" response))))
+    (when (eq (haskell-utils-parse-repl-response response) 'success)
+      response)))
 
 (defun company-ghci/get-signature (function)
   "Uses the :t repl command to get the signature of FUNCTION."
