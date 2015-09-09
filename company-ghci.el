@@ -52,16 +52,19 @@
     (cl-remove-if-not (lambda (candidate) (string-match to-complete candidate))
 		      completions)))
 
+(defun company-ghci/can-complete-p ()
+  (and (haskell-session-maybe)
+       (cl-destructuring-bind
+	   (beg end prefix type) (haskell-completions-grab-prefix)
+	 prefix)))
+
 ;;;###autoload
 (defun company-ghci (command &optional arg &rest ignored)
   "Company backend that provides completions using the current ghci process."
   (interactive (list 'interactive))
   (cl-case command
     (interactive (company-begin-backend 'company-ghci))
-    (prefix  (and (haskell-session-maybe)
-		  (cl-destructuring-bind
-		      (beg end prefix type) (haskell-completions-grab-prefix)
-		    prefix)))
+    (prefix  (company-ghci/can-complete-p))
     (candidates (company-ghci/get-completions arg))
     (meta (company-ghci/get-signature arg))))
 
