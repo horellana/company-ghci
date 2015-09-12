@@ -34,6 +34,11 @@
 (require 'haskell-process)
 (require 'haskell-completions)
 
+(defun company-ghci/hoogle-info (symbol)
+  "Use hoogle --info to search documentation of SYMBOL"
+  (when (executable-find "hoogle")
+    (shell-command-to-string (format "hoogle --info %s" symbol))))
+
 (defun company-ghci/repl-command (cmd)
   "Execute CMD in the ghci process."
   (let ((response (haskell-utils-reduce-string
@@ -66,7 +71,8 @@
     (interactive (company-begin-backend 'company-ghci))
     (prefix  (company-ghci/can-complete-p))
     (candidates (company-ghci/get-completions arg))
-    (meta (company-ghci/get-signature arg))))
+    (meta (company-ghci/get-signature arg))
+    (doc-buffer (company-doc-buffer (company-ghci/hoogle-info arg)))))
 
 (provide 'company-ghci)
 ;;; company-ghci.el ends here
