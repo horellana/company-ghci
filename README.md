@@ -32,6 +32,8 @@ Open a haskell file and load it using haskell-process-load-or-reload (C-c C-l), 
 
 If you have hoogle installed, you can press ```<f1>``` to open a buffer with the documentation of the highlighted completion candidate.
 
+If you have [company-quickhelp](https://github.com/expez/company-quickhelp), then a popup will appear with the documentation of the highlighted completion candidate.
+
 Images
 ------
 ![Screenshot](img.png)
