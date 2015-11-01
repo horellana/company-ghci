@@ -52,10 +52,12 @@
   (company-ghci/repl-command (concat ":t " function)))
 
 (defun company-ghci/get-completions (to-complete)
-  (cl-destructuring-bind
-      (beg end completions) (haskell-completions-sync-completions-at-point)
-    (cl-remove-if-not (lambda (candidate) (string-match to-complete candidate))
-		      completions)))
+  (let ((completion-info (haskell-completions-sync-completions-at-point)))
+    (when completion-info
+      (cl-destructuring-bind
+          (beg end completions) completion-info
+        (cl-remove-if-not (lambda (candidate) (string-prefix-p to-complete candidate))
+                          completions)))))
 
 (defun company-ghci/can-complete-p ()
   (and (haskell-session-maybe)
