@@ -59,9 +59,11 @@
 
 (defun company-ghci/can-complete-p ()
   (and (haskell-session-maybe)
-       (cl-destructuring-bind
-	   (beg end prefix type) (haskell-completions-grab-prefix)
-	 prefix)))
+       (let ((prefix-info (haskell-completions-grab-prefix)))
+         (when prefix-info
+           (cl-destructuring-bind
+               (beg end prefix type) prefix-info
+             prefix)))))
 
 ;;;###autoload
 (defun company-ghci (command &optional arg &rest ignored)
