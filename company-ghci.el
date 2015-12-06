@@ -55,7 +55,7 @@
   (let ((completion-info (haskell-completions-sync-completions-at-point)))
     (when completion-info
       (cl-destructuring-bind
-          (beg end completions) completion-info
+          (_beg _end completions) completion-info
         (cl-remove-if-not (lambda (candidate) (string-prefix-p to-complete candidate))
                           completions)))))
 
@@ -64,7 +64,7 @@
        (let ((prefix-info (haskell-completions-grab-prefix)))
          (when prefix-info
            (cl-destructuring-bind
-               (beg end prefix type) prefix-info
+               (_beg _end prefix _type) prefix-info
              prefix)))))
 
 ;;;###autoload
