@@ -44,7 +44,7 @@
   (let ((response (haskell-utils-reduce-string
 		   (haskell-process-queue-sync-request (haskell-process)
 						       cmd))))
-    (when (eq (haskell-utils-parse-repl-response response) 'success)
+    (when (eq (haskell-utils-repl-response-error-status response) 'no-error)
       response)))
 
 (defun company-ghci/get-signature (function)
