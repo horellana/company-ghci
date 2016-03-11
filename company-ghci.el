@@ -52,7 +52,7 @@
   (company-ghci/repl-command (concat ":t " function)))
 
 (defun company-ghci/get-completions (to-complete)
-  (let ((completion-info (haskell-completions-sync-completions-at-point)))
+  (let ((completion-info (haskell-completions-sync-repl-completion-at-point)))
     (when completion-info
       (cl-destructuring-bind
           (_beg _end completions) completion-info
