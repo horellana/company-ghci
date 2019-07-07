@@ -37,7 +37,7 @@
 (defun company-ghci/hoogle-info (symbol)
   "Use hoogle --info to search documentation of SYMBOL"
   (when (executable-find "hoogle")
-    (shell-command-to-string (format "hoogle --info %s" symbol))))
+    (shell-command-to-string (format "hoogle --info \"%s\"" symbol))))
 
 (defun company-ghci/repl-command (cmd)
   "Execute CMD in the ghci process."
